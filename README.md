@@ -10,9 +10,10 @@ Just copy/paste content inside main.py to your main.py project or wherever you n
 ```python
 
 financial_report()
+````
 
 ## Contributing
 Request are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/albertocastilloa/python-challenge/blob/master/LICENSE)
