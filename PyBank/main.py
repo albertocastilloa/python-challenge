@@ -4,7 +4,7 @@ import pandas as pd
 #Best practices tip: Naming in variables, function, methods, packages, modiles: lower_case_with_underscores
 def report_financial_records():
     #Pandas reader inside a function to improve performance. Recommended whether you're going to use the csv after a function call
-    df = pd.read_csv("budget_data.csv")
+    df = pd.read_csv("Resources/budget_data.csv")
     
     #Count total months using len()
     count_months = len(df['Date'])
