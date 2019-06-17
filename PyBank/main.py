@@ -2,7 +2,7 @@
 import pandas as pd
 
 #Best practices tip: Naming in variables, function, methods, packages, modiles: lower_case_with_underscores
-def report_financial_records():
+def financial_report():
     #Pandas reader inside a function to improve performance. Recommended whether you're going to use the csv after a function call
     df = pd.read_csv("Resources/budget_data.csv")
     
@@ -30,4 +30,4 @@ def report_financial_records():
     print(f"Greatest Decrease in Profits: {greatest_decrease_month_name} ${greatest_decrease}")
     
 #Call function       
-report_financial_records()
+financial_report()
