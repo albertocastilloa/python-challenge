@@ -1,68 +1,116 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 17 14:29:58 2019
-
-@author: albertocastillo - https://github.com/albertocastilloa/python-challenge
+README:
+    This challenge was programmed with all functions we learned past classes. I didn't use another libraries
+    because I wanted help to enforce knowledge. I hope this will be helpful to you.
+    
+    Summary:
+        1.- Declare libraries
+        2.- Functions:
+            max_profit(dataset) = Get max value of a dataset
+            min_profit(dataset) = Get min value of a dataset
+            avg_profit(dataset) = Get average value of a dataset
+            total_profit(dataset) = Get sum of profit of a dataset
+            financial_report_to_textfile(report_dict) = Send results to txt file. 
+                Warning: Make sure resources_directory is set with your directory. If you want to save the txt in the same path of your main.py, leave resources_directory blank
+            financial_report() = Retreive all data and print out results. At the same time calls financial_report_to_textfile(report_dict)                
 """
 import os
 import csv
 
-path_csv_file = os.path.join('Resources', 'budget_data.csv')
-#Warning: To avoid hours of searching, the Financial report must be .txt instead of csv due to csv = comma-separated-values
-path_write_csv_file = os.path.join('Resources', 'financial_report.txt')
+#Change this variables according to your directory structure
+resources_directory = 'Resources'
+output_directory = 'Output'
+csv_file_to_open = 'budget_data.csv'
+csv_file_to_create = 'financial_report.txt'
 
-def total_avg_profit(dataset, dataset_rows):
-    #Calculate total profit and avg profit
-    #It will return a list with Sum of profit and avg profit
-    result = [0,0]
-    #Sum profit
-    for i in dataset: 
-        result[0] += int(i[1])
-    #Get average profit
-    result[1] = result[0] / dataset_rows
-    #Return sum of proft and avg profit at the same time
+#Assign path of csv file
+path_csv_file = os.path.join(resources_directory, csv_file_to_open)
+#Warning: To avoid hours of searching, the Financial report must be .txt instead of .csv due to csv = comma-separated-values
+path_write_csv_file = os.path.join(output_directory, csv_file_to_create)
+
+def max_profit(dataset):
+    #Get Greates Increase Profit.
+    #It expect a list
+    #It will return a list with Month and Greates Increase Profit
+    result = []
+    month_profit = ''
+    top_profit = 0
+    
+    for profit_row in range(len(dataset)-1):
+        last_profit = float(dataset[profit_row][1])
+        current_profit = float(dataset[profit_row+1][1])
+        max_current_profit = current_profit - last_profit
+        if max_current_profit > top_profit:
+            top_profit = max_current_profit
+            month_profit = str(dataset[profit_row+1][0])
+                      
+    result.append(month_profit)
+    result.append(round(top_profit))
+        
     return result
 
-def max_min_profit(dataset, type_profit_value):
-    #Get Max or Min Profit.
-    #type_profit_value = boolean
-    #type_profit_value = 1 for Max profit value. 
-    #type_profit_value = 0 Min profit value
-    #It will return a list of Month and Profit
-    result = [0,0]
+def min_profit(dataset):
+    #Get Greates Decrease Profit.
+    #It will return a list with Month and Greates Decrease Profit
+    result = []
+    month_profit = ''
+    top_profit = 0
     
-    if type_profit_value:
-        for i in dataset:
-            if int(i[1]) > int(result[1]):
-                result = []
-                result.append(i[0])
-                result.append(i[1])
-    else:
-        for i in dataset:
-            if int(i[1]) < int(result[1]):
-                result = []
-                result.append(i[0])
-                result.append(i[1])
+    for profit_row in range(len(dataset)-1):
+        last_profit = float(dataset[profit_row][1])
+        current_profit = float(dataset[profit_row+1][1])
+        min_current_profit = current_profit - last_profit
+        if min_current_profit < top_profit:
+            top_profit = min_current_profit
+            month_profit = str(dataset[profit_row+1][0])
+                      
+    result.append(month_profit)
+    result.append(round(top_profit))
         
+    return result
+    
+def avg_profit(dataset): 
+    #It will return Average Change Profit.
+    result = 0
+    top_profit = 0
+    
+    for profit_row in range(len(dataset)-1):
+        last_profit = float(dataset[profit_row][1])
+        current_profit = float(dataset[profit_row+1][1])
+        avg_current_profit = current_profit - last_profit
+        top_profit += avg_current_profit
+    
+    result = round(top_profit / (len(dataset)-1),2)
+        
+    return result     
+
+def total_profit(dataset):
+    #It will return total profit
+    result = 0
+    
+    for profit_row in dataset: 
+        result += int(profit_row[1])
+    
     return result
     
 def financial_report_to_textfile(report_dict):
     #It will return a text file with Financial Analysis
+    
+    #Open file using 'w' = write.
     with open(path_write_csv_file, 'w') as financial_report_file:
         
         #At the final of each statement you'll see a "\n". Recall, it's used to emulate <enter> key
         financial_report_file.write(f"{report_dict['header']}\n")
         financial_report_file.write(f"{report_dict['labels'][0]} {report_dict['results'][0]}\n")
-        financial_report_file.write(f"{report_dict['labels'][1]} {report_dict['results'][1][0]}\n")
-        financial_report_file.write(f"{report_dict['labels'][2]} {report_dict['results'][1][1]:.2f}\n")
-        financial_report_file.write(f"{report_dict['labels'][3]} {report_dict['results'][2][0]} (${report_dict['results'][2][1]})\n")
-        financial_report_file.write(f"{report_dict['labels'][4]} {report_dict['results'][3][0]} (${report_dict['results'][3][1]})\n")
-        
+        financial_report_file.write(f"{report_dict['labels'][1]} {report_dict['results'][1]}\n")
+        financial_report_file.write(f"{report_dict['labels'][2]} {report_dict['results'][2]}\n")
+        financial_report_file.write(f"{report_dict['labels'][3]} {report_dict['results'][3][0]} (${report_dict['results'][3][1]})\n")
+        financial_report_file.write(f"{report_dict['labels'][4]} {report_dict['results'][4][0]} (${report_dict['results'][4][1]})\n")
                
 def financial_report():
-    #This function will build report through a dict and list.
-
+    #It will build a report through a dict and list.
     report_dict = {
             'header': 'Financial Analysis\n------------------------------',
             'labels': ['Total Months:', 'Total: $', 'Average Change: $', 'Greatest Increase in Profits:', 'Greatest Decrease in Profits:'],
@@ -79,21 +127,28 @@ def financial_report():
         #budget_data_list will be useful to activate other functions and save computer resources
         budget_data_list = [month for month in budget_data_ds]
         #Get total months
-        total_months = len(budget_data_list)
+        get_total_months = len(budget_data_list)
+        #Get total profit
+        get_total_profit = total_profit(budget_data_list)
         #Add results to report dict
-        report_dict['results']= [total_months, 
-                          total_avg_profit(budget_data_list, total_months),
-                          max_min_profit(budget_data_list, 1),
-                          max_min_profit(budget_data_list, 0)
-                          ]
+        #As we can see, every result is obtained through functions
+        report_dict['results']= [
+                get_total_months,
+                get_total_profit,
+                avg_profit(budget_data_list),
+                max_profit(budget_data_list),
+                min_profit(budget_data_list)]
         
-        print(report_dict['header'])
+        #Print out Financial Analysis
+        print(f"{report_dict['header']}")
         print(f"{report_dict['labels'][0]} {report_dict['results'][0]}")
-        print(f"{report_dict['labels'][1]} {report_dict['results'][1][0]}")
-        print(f"{report_dict['labels'][2]} {report_dict['results'][1][1]:.2f}")
-        print(f"{report_dict['labels'][3]} {report_dict['results'][2][0]} (${report_dict['results'][2][1]})")
-        print(f"{report_dict['labels'][4]} {report_dict['results'][3][0]} (${report_dict['results'][3][1]})")
+        print(f"{report_dict['labels'][1]} {report_dict['results'][1]}")
+        print(f"{report_dict['labels'][2]} {report_dict['results'][2]}")
+        print(f"{report_dict['labels'][3]} {report_dict['results'][3][0]} (${report_dict['results'][3][1]})")
+        print(f"{report_dict['labels'][4]} {report_dict['results'][4][0]} (${report_dict['results'][4][1]})")
         
+        #Save report to txt file
         financial_report_to_textfile(report_dict)
-
+        
+#Start program
 financial_report()
